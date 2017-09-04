@@ -3,9 +3,9 @@ set nocp
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+Plugin 'SirVer/ultisnips'
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'bling/vim-airline'
-Plugin 'honza/vim-snippets'
 Plugin 'kien/ctrlp.vim'
 Plugin 'luochen1990/rainbow'
 Plugin 'oblitum/YouCompleteMe'
@@ -25,7 +25,11 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_goto_buffer_command = 'new-tab'
-let g:ycm_seed_identifiers_with_syntax = 1
+
+" UltiSnips config "
+let g:UltiSnipsExpandTrigger = "<c-j>"
+let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
 " Settings "
 set ai si nu sw=2 ts=2 sts=2 et spr
@@ -43,8 +47,11 @@ map gd :YcmCompleter GoTo<cr>
 map gD :YcmCompleter GetType<cr>
 map gc <plug>NERDCommenterComment
 map gu <plug>NERDCommenterUncomment
+map <f9> :call Compile()<cr>
+map <f5> :call Run()<cr>
 
 " Compile and run "
+let $CXXFLAGS="-O2 -DLOCAL -std=c++11 -Wall -Wextra -Wno-unused-result"
 func! Compile()
   write
   if &filetype == "cpp" || &filetype == "c"
@@ -55,7 +62,6 @@ func! Compile()
       let $CXXFLAGS .= "-DJNGEN_DECLARE_ONLY "
       let $CXXFLAGS .= "libjngen.o "
     endif
-
     silent !echo
     silent !echo -e "\033[31;1m* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\033[0;m"
     silent make! %:r
@@ -63,7 +69,6 @@ func! Compile()
       :!
     endif
     redraw!
-
     let $CXXFLAGS = CXXFLAGS
   elseif &filetype == "java"
     !javac %
@@ -74,7 +79,6 @@ func! Compile()
   endif
   " redraw!
 endf
-
 func! Run()
   write
   if &filetype == "python"
@@ -96,11 +100,6 @@ func! Run()
     !./%<
   endif
 endf
-
 func! RunWithArgs()
   !xargs -L 1 ./%<
 endf
-
-let $CXXFLAGS="-O2 -DLOCAL -std=c++11 -Wall -Wextra -Wno-unused-result"
-map <f9> :call Compile()<cr>
-map <f5> :call Run()<cr>

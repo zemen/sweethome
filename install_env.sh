@@ -26,6 +26,8 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 echo "${RED}>>> Installing vim plugins${NC}"
 vim +PluginInstall +qall
+mkdir ~/.vim/UltiSnips 2> /dev/null
+wget https://raw.githubusercontent.com/zemen/sweethome/master/UltiSnips/cpp.snippets -O ~/.vim/UltiSnips/cpp.snippets
 wget https://raw.githubusercontent.com/zemen/sweethome/master/ycm_extra_conf.py -O ~/.vim/ycm_extra_conf.py
 ~/.vim/bundle/YouCompleteMe/install.py --clang-completer
 
