@@ -1,14 +1,20 @@
-echo "Switching to home directory"
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo "${RED}>>> Switching to home directory${NC}"
 cd
 
-echo "Removing .zshrc"
+echo "${RED}>>> Removing .zshrc${NC}"
 rm .zshrc
 
-echo "Uninstalling oh-my-zsh"
+echo "${RED}>>> Uninstalling oh-my-zsh${NC}"
 rm -rf .oh-my-zsh
 
-echo "Removing .vimrc"
+echo "${RED}>>> Removing .vimrc${NC}"
 rm .vimrc
 
-#echo "Removing vim plugins"
+#echo "${RED}>>> Removing vim plugins${NC}"
 #rm -rf .vim
+
+echo "${RED}>>> Removing bin directory${NC}"
+rm -rf bin
