@@ -33,6 +33,7 @@ let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
 " Settings "
 set ai si nu sw=2 ts=2 sts=2 et spr
+set enc=utf-8
 set cino=N-s,g0,+2s,l-s,i2s
 set cinw+=forn
 
