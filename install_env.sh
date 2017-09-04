@@ -9,19 +9,21 @@ rm install_oh_my_zsh.sh
 
 echo "Configuring .zshrc"
 sed -i "s/# DISABLE_AUTO_UPDATE/DISABLE_AUTO_UPDATE/" .zshrc
+sed -i "s/# export PATH/export PATH/g" .zshrc
 echo "export EDITOR=vim" | tee -a .zshrc > /dev/null
-echo "export PATH=$PATH:~/bin" | tee -a .zshrc > /dev/null
-
 echo "Configuring oh-my-zsh theme"
 sed -i "s/ZSH_THEME\=\"robbyrussell\"/ZSH_THEME=\"zemen\"/" .zshrc
 cp .oh-my-zsh/themes/robbyrussell.zsh-theme .oh-my-zsh/themes/zemen.zsh-theme
 sed -i "s/%c/%~/" ~/.oh-my-zsh/themes/zemen.zsh-theme
 
 echo "Installing .vimrc and vundle"
-wget https://raw.githubusercontent.com/zemen/sweethome/master/.vimrc -O ~/.vimrc
+wget https://raw.githubusercontent.com/zemen/sweethome/master/vimrc -O ~/.vimrc
 mkdir -p ~/.vim/bundle
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 echo "Installing vim plugins"
 vim +PluginInstall +qall
 ~/.vim/bundle/YouCompleteMe/install.py --clang-completer
+
+echo "Installing .gitconfig"
+wget https://raw.githubusercontent.com/zemen/sweethome/master/gitconfig -O ~/.gitconfig

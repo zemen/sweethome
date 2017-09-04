@@ -1,0 +1,20 @@
+[user]
+  email = konstantin.semenov@aimtech.com
+  name = Konstantin Semenov
+[push]
+  default = simple
+[pull]
+  rebase = true
+[merge]
+  tool = vimdiff
+[color]
+  ui = true
+[alias]
+  co = checkout
+  ci = commit
+  st = status
+[core]
+  autocrlf = input
+  safecrlf = true
+[credential]
+  helper = cache --timeout=36000
