@@ -1,8 +1,21 @@
-snippet forn "forn loop"
+snippet fori "for int loop"
 for (int ${1:i} = 0; $1 < ${2:n}; ++$1) {
-	$3
+  $0
 }
-$0
+endsnippet
+
+snippet foru "for size_t loop"
+for (size_t ${1:i} = 0; $1 < ${2:n}; ++$1) {
+  $0
+}
+endsnippet
+
+snippet static_cast "static_cast" i
+static_cast<$1>($2)$0
+endsnippet
+
+snippet reinterpret_cast "reinterpret_cast" i
+reinterpret_cast<$1>($2)$0
 endsnippet
 
 snippet sz "int size()" i
@@ -13,23 +26,9 @@ snippet all "begin() end()" i
 $1.begin(), $1.end()$0
 endsnippet
 
-snippet if "if"
-if ($1) {
-	$2
-}
-$0
-endsnippet
-
-snippet for "for"
-for (${1:int i = 0}; ${2:i < n}; ${3:++i}) {
-	$4
-}
-$0
-endsnippet
-
 snippet struct "struct"
 struct $1 {
-	$0
+  $0
 };
 endsnippet
 
@@ -45,9 +44,9 @@ using ld = long double;
 
 signed main() {
 #ifdef LOCAL
-	assert(freopen(".in", "r", stdin));
+  assert(freopen("$1.in", "r", stdin));
 #endif
-	$0
+  $0
 }
 endsnippet
 
@@ -67,48 +66,48 @@ snippet modular "modular arithmetics"
 const int mod = 1e9 + 7;
 template<typename T>
 T add(T x) {
-	return x;
+  return x;
 }
 template<typename T, typename... Ts>
 T add(T x, Ts... y) {
-	T res = x + add(y...);
-	if (res >= mod)
-		res -= mod;
-	return res;
+  T res = x + add(y...);
+  if (res >= mod)
+    res -= mod;
+  return res;
 }
 template<typename T, typename... Ts>
 T sub(T x, Ts... y) {
-	return add(x, mod - add(y...));
+  return add(x, mod - add(y...));
 }
 template<typename T, typename... Ts>
 void udd(T &x, Ts... y) {
-	x = add(x, y...);
+  x = add(x, y...);
 }
 template<typename T>
 T mul(T x) {
-	return x;
+  return x;
 }
 template<typename T, typename... Ts>
 T mul(T x, Ts... y) {
-	return (x * 1ll * mul(y...)) % mod;
+  return (x * 1ll * mul(y...)) % mod;
 }
 template<typename T, typename... Ts>
 void uul(T &x, Ts... y) {
-	x = mul(x, y...);
+  x = mul(x, y...);
 }
 int bin(int a, ll deg) {
-	int r = 1;
-	while (deg) {
-		if (deg & 1)
-			uul(r, a);
-		deg >>= 1;
-		uul(a, a);
-	}
-	return r;
+  int r = 1;
+  while (deg) {
+    if (deg & 1)
+      uul(r, a);
+    deg >>= 1;
+    uul(a, a);
+  }
+  return r;
 }
 int inv(int x) {
-	assert(x);
-	return bin(x, mod - 2);
+  assert(x);
+  return bin(x, mod - 2);
 }
 $0
 endsnippet
