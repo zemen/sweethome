@@ -44,6 +44,7 @@ ln -s $dir/gitconfig .gitconfig
 
 echo "$RED>>> Installing .tmux.conf$NC"
 ln -s $dir/tmux.conf .tmux.conf
+tmux source .tmux.conf
 
 echo "$RED>>> Installing bin directory$NC"
 mkdir bin 2> /dev/null
