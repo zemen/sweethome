@@ -1,13 +1,31 @@
+snippet forn "for int loop"
+for (int ${1:i} = 0; $1 < ${2:n}; ++$1) {
+	$3
+}$0
+endsnippet
+
 snippet fori "for int loop"
 for (int ${1:i} = 0; $1 < ${2:n}; ++$1) {
-	$0
-}
+	$3
+}$0
 endsnippet
 
 snippet foru "for size_t loop"
 for (size_t ${1:i} = 0; $1 < ${2:n}; ++$1) {
-	$0
-}
+	$3
+}$0
+endsnippet
+
+snippet if "if"
+if ($1) {
+	$2
+}$0
+endsnippet
+
+snippet for "for"
+for ($1) {
+	$2
+}$0
 endsnippet
 
 snippet static_cast "static_cast" i
@@ -109,5 +127,38 @@ int inv(int x) {
 	assert(x);
 	return bin(x, mod - 2);
 }
+$0
+endsnippet
+
+snippet dsu "DSU"
+struct DSU {
+	vector<int> col, rk;
+
+	DSU(int n): col(n), rk(n) {
+		iota(col.begin(), col.end(), 0);
+	}
+
+	int get(int u) {
+		if (u == col[u]) {
+			return u;
+		}
+		return col[u] = get(col[u]);
+	}
+
+	bool join(int u, int v) {
+		u = get(u), v = get(v);
+		if (u == v) {
+			return false;
+		}
+		if (rk[u] > rk[v]) {
+			swap(u, v);
+		}
+		if (rk[u] == rk[v]) {
+			++rk[v];
+		}
+		col[u] = v;
+		return true;
+	}
+};
 $0
 endsnippet
