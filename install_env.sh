@@ -10,6 +10,7 @@ echo "$RED>>> Switching to home directory$NC"
 cd
 
 echo "$RED>>> Installing oh-my-zsh$NC"
+export ZSH=~/.oh-my-zsh
 wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O install_oh_my_zsh.sh
 sed -i "/env zsh/d" install_oh_my_zsh.sh
 sh install_oh_my_zsh.sh

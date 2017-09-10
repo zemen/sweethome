@@ -31,6 +31,7 @@ let g:UltiSnipsExpandTrigger = "<c-l>"
 let g:UltiSnipsJumpForwardTrigger = "<c-l>"
 
 " Settings "
+syntax on
 set ai si nu sw=2 ts=2 sts=2 et spr
 set enc=utf-8
 set cino=N-s,g0,+2s,l-s,i2s
