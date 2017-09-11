@@ -1,26 +1,23 @@
-RED='\033[0;31m'
-NC='\033[0m'
-
-echo "$RED>>> Switching to home directory$NC"
+echo ">>> Switching to home directory"
 cd
 
-echo "$RED>>> Removing .zshrc$NC"
+echo ">>> Removing .zshrc"
 rm .zshrc
 
-echo "$RED>>> Uninstalling oh-my-zsh$NC"
+echo ">>> Uninstalling oh-my-zsh"
 rm -rf .oh-my-zsh
 
-echo "$RED>>> Removing .vimrc$NC"
+echo ">>> Removing .vimrc"
 rm .vimrc
 
-#echo "$RED>>> Removing vim plugins$NC"
+#echo ">>> Removing vim plugins"
 #rm -rf .vim
 
-echo "$RED>>> Removing .gitconfig$NC"
+echo ">>> Removing .gitconfig"
 rm .gitconfig
 
-echo "$RED>>> Removing bin directory$NC"
+echo ">>> Removing bin directory"
 rm -rf bin
 
-echo "$RED>>> Removing tmux.conf$NC"
+echo ">>> Removing tmux.conf"
 rm .tmux.conf
