@@ -47,6 +47,6 @@ tmux source .tmux.conf
 
 echo ">>> Installing bin directory"
 mkdir bin 2> /dev/null
-ln -s .vim/bundle/YCM-Generator/config_gen.py bin/ycm_config_gen
+ln -s $HOME/.vim/bundle/YCM-Generator/config_gen.py bin/ycm_config_gen
 ln -s $dir/bin/compile bin/compile
 chmod +x bin/compile
