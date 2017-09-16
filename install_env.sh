@@ -21,6 +21,10 @@ sed -i --follow-symlinks "s/# DISABLE_AUTO_UPDATE/DISABLE_AUTO_UPDATE/" .zshrc
 sed -i --follow-symlinks "s/# export PATH/export PATH/g" .zshrc
 echo "export EDITOR=vim" | tee -a .zshrc > /dev/null
 
+echo ">>> Configuring oh-my-zsh completions"
+mkdir .oh-my-zsh/completions 2> /dev/null
+ln -s $dir/completions/_polygon-cli .oh-my-zsh/completions
+
 echo ">>> Configuring oh-my-zsh theme"
 sed -i --follow-symlinks "s/ZSH_THEME\=\"robbyrussell\"/ZSH_THEME=\"zemen\"/" .zshrc
 cp .oh-my-zsh/themes/robbyrussell.zsh-theme .oh-my-zsh/themes/zemen.zsh-theme

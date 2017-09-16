@@ -1,0 +1,52 @@
+#compdef polygon-cli
+typeset -A opt_args
+ 
+_arguments -C \
+    '1:command:->cmds' \
+    '*:: :->args' \
+&& return 0
+ 
+ 
+case "$state" in
+    (cmds)
+        local commands; commands=(
+            "init:Initialize tool"
+            "init_contest:Initialize tool for several problems in one contest"
+            "update:Download files from polygon working copy, and merge with local copy"
+            "add:Upload files to polygon"
+            "commit:Put all local changes to polygon. Not making a commit in polygon"
+            "list:List files in polygon"
+            "diff:Prints diff of local and polygon version of file"
+            "gettest:Downloads test with given numbers"
+            "getalltests:Downloads all tests"
+            "download_package:Downloads package"
+        )
+ 
+        _describe -t commands 'command' commands && return 0
+    ;;
+    (args)
+        if (( CURRENT == 2 )); then
+            case $line[1] in
+                (add)
+                    local commands; commands=(
+                        "solution"
+                        "resource"
+                        "source"
+                        "checker"
+                        "validator"
+                        "interactor"
+                    )
+ 
+                    _describe -t commands 'file type' commands && return 0
+                ;;
+                (*)
+                    _files && return 0
+                ;;
+            esac
+        else
+            _files && return 0
+        fi
+    ;;
+esac
+ 
+return 1
