@@ -54,3 +54,12 @@ mkdir bin 2> /dev/null
 ln -s $HOME/.vim/bundle/YCM-Generator/config_gen.py bin/ycm_config_gen
 ln -s $dir/bin/compile bin/compile
 chmod +x bin/compile
+
+if which jupyter > /dev/null; then
+  echo ">>> Installing jupyter-vim-binding"
+  mkdir -p $(jupyter --data-dir)/nbextensions 2> /dev/null
+  cd $(jupyter --data-dir)/nbextensions
+  git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
+  cd
+  ln -s $dir/jupyter .jupyter
+fi

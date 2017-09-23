@@ -21,3 +21,9 @@ rm -rf bin
 
 echo ">>> Removing tmux.conf"
 rm .tmux.conf
+
+if which jupyter > /dev/null; then
+  echo ">>> Removing jupyter config"
+  rm -rf .jupyter
+  rm -rf $(jupyter --data-dir)/nbextensions/vim_binding
+fi
