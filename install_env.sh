@@ -27,8 +27,7 @@ ln -s $dir/completions/_polygon-cli .oh-my-zsh/completions
 
 echo ">>> Configuring oh-my-zsh theme"
 sed -i --follow-symlinks "s/ZSH_THEME\=\"robbyrussell\"/ZSH_THEME=\"zemen\"/" .zshrc
-cp .oh-my-zsh/themes/robbyrussell.zsh-theme .oh-my-zsh/themes/zemen.zsh-theme
-sed -i "s/%c/%~/" .oh-my-zsh/themes/zemen.zsh-theme
+ln -s $dir/zemen.zsh-theme .oh-my-zsh/themes
 
 echo ">>> Installing .vimrc and vundle"
 ln -s $dir/vimrc .vimrc
