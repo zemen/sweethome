@@ -36,6 +36,7 @@ set ai si nu sw=2 ts=2 sts=2 et spr
 set enc=utf-8
 set cino=N-s,g0,+2s,l-s,i2s
 set cinw+=forn
+set dir=$HOME/.vim/swapfiles//
 
 " Mappings "
 imap jk <esc>:w<cr>
@@ -60,8 +61,8 @@ func! Compile()
     call system("grep '#include \"jngen.h\"' " . shellescape(expand("%")))
     if !v:shell_error 
       echom "Success"
-      let $CXXFLAGS .= "-DJNGEN_DECLARE_ONLY "
-      let $CXXFLAGS .= "libjngen.o "
+      let $CXXFLAGS .= " -DJNGEN_DECLARE_ONLY "
+      let $CXXFLAGS .= " src/libjngen.o "
     endif
     silent !echo
     silent !echo -e "\033[31;1m* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\033[0;m"

@@ -33,6 +33,7 @@ sed -i "s/%c/%~/" .oh-my-zsh/themes/zemen.zsh-theme
 echo ">>> Installing .vimrc and vundle"
 ln -s $dir/vimrc .vimrc
 mkdir -p .vim/bundle 2> /dev/null
+mkdir .vim/swapfiles
 git clone https://github.com/VundleVim/Vundle.vim.git .vim/bundle/Vundle.vim
 
 echo ">>> Installing vim plugins"
