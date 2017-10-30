@@ -29,6 +29,13 @@ echo ">>> Configuring oh-my-zsh theme"
 sed -i --follow-symlinks "s/ZSH_THEME\=\"robbyrussell\"/ZSH_THEME=\"zemen\"/" .zshrc
 ln -s $dir/zemen.zsh-theme .oh-my-zsh/themes
 
+echo ">>> Installing fzf"
+mkdir -p .oh-my-zsh/custom/plugins 2> /dev/null
+git clone https://github.com/junegunn/fzf.git .oh-my-zsh/custom/plugins/fzf
+.oh-my-zsh/custom/plugins/fzf/install --bin
+git clone https://github.com/Treri/fzf-zsh.git .oh-my-zsh/custom/plugins/fzf-zsh
+sed -i --follow-symlinks "s/plugins=(git)/plugins=(git fzf-zsh)/g" .zshrc
+
 echo ">>> Installing .vimrc and vundle"
 ln -s $dir/vimrc .vimrc
 mkdir -p .vim/bundle 2> /dev/null
@@ -54,6 +61,8 @@ mkdir bin 2> /dev/null
 ln -s $HOME/.vim/bundle/YCM-Generator/config_gen.py bin/ycm_config_gen
 ln -s $dir/bin/compile bin/compile
 chmod +x bin/compile
+ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf bin
+ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf-tmux bin
 
 if which jupyter > /dev/null; then
   echo ">>> Installing jupyter-vim-binding"
