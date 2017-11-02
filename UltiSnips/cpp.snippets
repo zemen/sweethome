@@ -1,11 +1,7 @@
-snippet "namespace {" "unnamed namespace" rbiA
-namespace {$0
-}  // unnamed namespace
-endsnippet
-
-snippet "namespace (\w+) {" "namespace" rbiA
-namespace `!p snip.rv = match.group(1)` {$0
-}  // namespace `!p snip.rv = match.group(1)`
+snippet " {" "bracket complete" i
+ {
+	$0
+}
 endsnippet
 
 snippet "(struct|class) (\w+) {" "struct/class" rbiA
@@ -13,9 +9,14 @@ snippet "(struct|class) (\w+) {" "struct/class" rbiA
 };
 endsnippet
 
-snippet "\) (.*){" "bracket completion" riA
-) `!p snip.rv = match.group(1)`{$0
-}
+snippet "namespace (\w+) {" "namespace" rbiA
+namespace `!p snip.rv = match.group(1)` {$0
+}  // namespace `!p snip.rv = match.group(1)`
+endsnippet
+
+snippet "namespace {" "unnamed namespace" rbiA
+namespace {$0
+}  // unnamed namespace
 endsnippet
 
 snippet forn "for int loop"
@@ -40,7 +41,6 @@ endsnippet
 
 snippet templ "template"
 #include <bits/stdc++.h>
-#define len(x) ((int) (x).size())
 using namespace std;
 using ll = long long;
 using ld = long double;
@@ -53,7 +53,241 @@ signed main() {
 }
 endsnippet
 
-snippet modular "modular arithmetics"
+snippet bool_array "bool_array" b
+struct BoolArray {
+	vector<int> revision;
+	int cur_revision;
+
+	BoolArray() : cur_revision(1) {
+	}
+
+	BoolArray(int n) : revision(n), cur_revision(1) {
+	}
+
+	void clear() {
+		++cur_revision;
+	}
+
+	bool operator[](int id) const {
+		return revision[id] == cur_revision;
+	}
+
+	void set_true(int id, bool value = true) {
+		revision[id] = value ? cur_revision : -1;
+	}
+};
+endsnippet
+
+snippet dickstra "dickstra" b
+vector<ll> dickstra(int from) {
+	const ll infl = 4e18;
+	vector<ll> dist(n, infl);
+	using Elem = pair<int, ll>;
+	priority_queue<Elem, vector<Elem>, greater<Elem>> o;
+	dist[from] = 0;
+	o.emplace(dist[from], from);
+	while (!o.empty()) {
+		int u;
+		ll cdist;
+		tie(u, cdist) = o.top();
+		o.pop();
+		if (cdist != dist[u])
+			continue;
+		for (auto p : g[u]) {
+			int v;
+			ll w;
+			tie(v, w) = p;
+			ll ndist = dist[u] + w;
+			if (ndist >= dist[v])
+				continue;
+			dist[v] = ndist;
+			o.emplace(dist[v], v);
+		}
+	}
+	return dist;
+}
+endsnippet
+
+snippet dsu "dsu" b
+struct DSU {
+	vector<int> col, rk;
+
+	DSU(int n): col(n), rk(n) {
+		iota(col.begin(), col.end(), 0);
+	}
+
+	int get(int u) {
+		if (u == col[u]) {
+			return u;
+		}
+		return col[u] = get(col[u]);
+	}
+
+	bool join(int u, int v) {
+		u = get(u), v = get(v);
+		if (u == v) {
+			return false;
+		}
+		if (rk[u] > rk[v]) {
+			swap(u, v);
+		}
+		if (rk[u] == rk[v]) {
+			++rk[v];
+		}
+		col[u] = v;
+		return true;
+	}
+};
+endsnippet
+
+snippet fenwick "fenwick" b
+struct Fenwick {
+	vector<ll> t, a;
+
+	Fenwick(int n) : t(n), a(n) {
+	}
+
+	void add(int pos, ll delta) {
+		assert(0 <= pos && pos < (int) t.size());
+		a[pos] += delta;
+		for (int i = pos; i < (int) t.size(); i |= i + 1) {
+			t[i] += delta;
+		}
+	}
+
+	void set(int pos, ll val) {
+		add(pos, val - a[pos]);
+	}
+
+	ll get(int r) {
+		ll res = 0;
+		for (int i = r - 1; i >= 0; i = (i & (i + 1)) - 1) {
+			res += t[i];
+		}
+		return res;
+	}
+
+	ll get(int l, int r) {
+		return get(r) - get(l);
+	}
+};
+endsnippet
+
+snippet flat_set "flat_set" b
+template<typename T>
+struct FlatSet {
+	vector<T> v;
+	bool built = true;
+
+	void push_back(const T& x) {
+		v.push_back(x);
+		built = false;
+	}
+
+	void build() {
+		sort(v.begin(), v.end());
+		v.erase(unique(v.begin(), v.end()), v.end());
+		built = true;
+	}
+
+	int lower_bound_index(const T& x) {
+		assert(built);
+		return lower_bound(v.begin(), v.end(), x) - v.begin();
+	}
+
+	int order_of_key(const T& x) {
+		assert(built);
+		auto it = lower_bound(v.begin(), v.end(), x);
+		assert(it != v.end() && *it == x);
+		return it - v.begin();
+	}
+
+	static FlatSet build_and_compress(vector<T>& a) {
+		FlatSet res;
+		for (auto x : a) {
+			res.push_back(x);
+		}
+		res.build();
+		for (auto& x : a) {
+			x = res.order_of_key(x);
+		}
+		return res;
+	}
+};
+endsnippet
+
+snippet geometry "geometry" b
+const ld eps = 1e-9;
+
+bool ze(ld a) { return fabsl(a) < eps; }
+bool eq(ld a, ld b) { return ze(a - b); }
+ld sqr(ld x) { return x * x; }
+ld Sqrt(ld x) { return sqrtl(max<ld>(0, x)); }
+
+struct pt {
+	ld x, y;
+
+	pt operator+(const pt &p) const { return pt{x + p.x, y + p.y}; }
+	pt operator-(const pt &p) const { return pt{x - p.x, y - p.y}; }
+	ld operator*(const pt &p) const { return x * p.x + y * p.y; }
+	ld operator%(const pt &p) const { return x * p.y - y * p.x; }
+	pt operator*(const ld &a) const { return pt{x * a, y * a}; }
+	bool operator==(const pt &p) const { return eq(x, p.x) && eq(y, p.y); }
+
+	bool up() const { return ze(y) ? x > 0 : y > 0; }
+
+	bool operator<(const pt &p) const {
+		if (!eq(x, p.x))
+			return x < p.x;
+		if (!eq(y, p.y))
+			return y < p.y;
+		return false;
+	}
+
+	pt rot() { return pt{-y, x}; }
+	pt rotCw(pt e) { return pt{e * *this, e % *this}; }
+	ld abs() const { return hypotl(x, y); }
+	ld abs2() const { return x * x + y * y; }
+};
+
+istream &operator>>(istream &in, pt &p) { return in >> p.x >> p.y; }
+ostream &operator<<(ostream &out, const pt &p) { return out << p.x << ' ' << p.y; }
+
+bool cmpAngle(const pt &a, const pt &b) {
+	bool au = a.up(), bu = b.up();
+	if (au != bu)
+		return au;
+	return a % b > eps;
+}
+
+struct line {
+	pt v;
+	ld c; // v * p = c
+
+	//check: p1 != p2
+	line(pt p1, pt p2) {
+		v = (p2 - p1).rot();
+		v = v * (1. / v.abs());
+		c = v * p1;
+	}
+
+	// Convert from ax + by + c = 0
+
+	//check: a^2+b^2 > 0
+	line(ld a, ld b, ld _c): v(pt{a, b}), c(-_c) {
+		ld d = v.abs();
+		v = v * (1. / d);
+		c /= d;
+	}
+
+	//check: v.abs() == 1
+	ld signedDist(pt p) {
+		return v * p - c;
+	}
+};
+endsnippet
+
+snippet modular "modular" b
 const int mod = 1e9 + 7;
 template<typename T>
 T add(T x) {
@@ -100,38 +334,5 @@ int inv(int x) {
 	assert(x);
 	return bin(x, mod - 2);
 }
-$0
 endsnippet
 
-snippet dsu "DSU"
-struct DSU {
-	vector<int> col, rk;
-
-	DSU(int n): col(n), rk(n) {
-		iota(col.begin(), col.end(), 0);
-	}
-
-	int get(int u) {
-		if (u == col[u]) {
-			return u;
-		}
-		return col[u] = get(col[u]);
-	}
-
-	bool join(int u, int v) {
-		u = get(u), v = get(v);
-		if (u == v) {
-			return false;
-		}
-		if (rk[u] > rk[v]) {
-			swap(u, v);
-		}
-		if (rk[u] == rk[v]) {
-			++rk[v];
-		}
-		col[u] = v;
-		return true;
-	}
-};
-$0
-endsnippet
