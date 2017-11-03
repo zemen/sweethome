@@ -1,3 +1,27 @@
+snippet cerr "cerr" b
+cerr << "$1: " << $1 << '\n';
+endsnippet
+
+snippet cerra "cerr with for" b
+for (int i = 0; i < ${1:n}; ++i) {
+	cerr << ${2:array}[i] << ' ';
+}
+cerr << '\n';
+endsnippet
+
+snippet cerrv "cerr iterable" b
+for (auto x : ${1:container}) {
+	cerr << x << ' ';
+}
+cerr << '\n';
+endsnippet
+
+snippet read "read with for" b
+for (int i = 0; i < ${1:n}; ++i) {
+	cin >> ${2:array}[i];
+}
+endsnippet
+
 snippet " {" "bracket complete" i
  {
 	$0
