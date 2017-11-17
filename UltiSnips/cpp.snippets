@@ -1,5 +1,5 @@
 snippet cerr "cerr" b
-cerr << "$1: " << $1 << '\n';
+cerr << "$1: " << $2 << '\n';
 endsnippet
 
 snippet cerra "cerr with for" b
@@ -70,11 +70,26 @@ using ll = long long;
 using ld = long double;
 
 signed main() {
+	$0
+}
+endsnippet
+
+snippet freopen "freopen wrapper"
 #ifdef LOCAL
 	assert(freopen("${1:test}.in", "r", stdin));
 #endif
-	$0
-}
+endsnippet
+
+snippet eps_templ "eps wrappers"
+const ld eps = 1e-9;
+bool ze(ld a) { return fabsl(a) < eps; }
+bool eq(ld a, ld b) { return ze(a - b); }
+bool lt(ld a, ld b) { return b - a > eps; }
+bool le(ld a, ld b) { return b - a >= -eps; }
+bool gt(ld a, ld b) { return a - b > eps; }
+bool ge(ld a, ld b) { return a - b >= -eps; }
+ld sqr(ld x) { return x * x; }
+ld Sqrt(ld x) { return sqrtl(max<ld>(0, x)); }
 endsnippet
 
 snippet bool_array "bool_array" b
@@ -451,3 +466,23 @@ using oset = __gnu_pbds::tree<int, __gnu_pbds::null_type,
 				__gnu_pbds::tree_order_statistics_node_update>;
 endsnippet
 
+snippet sieve "sieve" b
+struct Sieve {
+	vector<char> p;
+
+	void build() {
+		for (int i = 2; i * i < (int) p.size(); ++i) {
+			if (!p[i]) {
+				continue;
+			}
+			for (int j = i * i; j < (int) p.size(); j += i) {
+				p[j] = false;
+			}
+		}
+	}
+
+	Sieve(int n): p(n, true) {
+		build();
+	}
+};
+endsnippet
