@@ -57,10 +57,14 @@ snippet all "begin() and end()" i
 $1.begin(), $1.end()$0
 endsnippet
 
+snippet unique "unique"
+sort(${1:a}.begin(), $1.end());
+$1.erase(unique($1.begin(), $1.end()), $1.end());
+endsnippet
+
 snippet ios "fast cin"
 ios::sync_with_stdio(false);
 cin.tie(0);
-$0
 endsnippet
 
 snippet templ "template"
@@ -256,35 +260,21 @@ struct FlatSet {
 endsnippet
 
 snippet geometry "geometry" b
-const ld eps = 1e-9;
-
-bool ze(ld a) { return fabsl(a) < eps; }
-bool eq(ld a, ld b) { return ze(a - b); }
-ld sqr(ld x) { return x * x; }
-ld Sqrt(ld x) { return sqrtl(max<ld>(0, x)); }
-
 struct pt {
 	ld x, y;
 
-	pt operator+(const pt &p) const { return pt{x + p.x, y + p.y}; }
-	pt operator-(const pt &p) const { return pt{x - p.x, y - p.y}; }
-	ld operator*(const pt &p) const { return x * p.x + y * p.y; }
-	ld operator%(const pt &p) const { return x * p.y - y * p.x; }
-	pt operator*(const ld &a) const { return pt{x * a, y * a}; }
-	bool operator==(const pt &p) const { return eq(x, p.x) && eq(y, p.y); }
+	pt operator+(const pt& p) const { return pt{x + p.x, y + p.y}; }
+	pt operator-(const pt& p) const { return pt{x - p.x, y - p.y}; }
+	ld operator*(const pt& p) const { return x * p.x + y * p.y; }
+	ld operator%(const pt& p) const { return x * p.y - y * p.x; }
+	pt operator*(const ld& a) const { return pt{x * a, y * a}; }
+	bool operator==(const pt& p) const { return eq(x, p.x) && eq(y, p.y); }
 
 	bool up() const { return ze(y) ? x > 0 : y > 0; }
 
-	bool operator<(const pt &p) const {
-		if (!eq(x, p.x))
-			return x < p.x;
-		if (!eq(y, p.y))
-			return y < p.y;
-		return false;
-	}
-
+	pt norm() { return *this * (1. / abs()); }
 	pt rot() { return pt{-y, x}; }
-	pt rotCw(pt e) { return pt{e * *this, e % *this}; }
+	pt rot_cw(pt e) { return pt{e * *this, e % *this}; }
 	ld abs() const { return hypotl(x, y); }
 	ld abs2() const { return x * x + y * y; }
 };
@@ -292,19 +282,26 @@ struct pt {
 istream &operator>>(istream &in, pt &p) { return in >> p.x >> p.y; }
 ostream &operator<<(ostream &out, const pt &p) { return out << p.x << ' ' << p.y; }
 
-bool cmpAngle(const pt &a, const pt &b) {
+bool cmp_yx(const pt& a, const pt& b) {
+	if (!eq(a.y, b.y))
+		return a.y < b.y;
+	if (!eq(a.x, b.x))
+		return a.x < b.x;
+	return false;
+}
+bool cmp_angle(const pt& a, const pt& b) {
 	bool au = a.up(), bu = b.up();
 	if (au != bu)
 		return au;
 	return a % b > eps;
 }
 
-struct line {
+struct Line {
 	pt v;
 	ld c; // v * p = c
 
 	//check: p1 != p2
-	line(pt p1, pt p2) {
+	Line(pt p1, pt p2) {
 		v = (p2 - p1).rot();
 		v = v * (1. / v.abs());
 		c = v * p1;
@@ -313,14 +310,14 @@ struct line {
 	// Convert from ax + by + c = 0
 
 	//check: a^2+b^2 > 0
-	line(ld a, ld b, ld _c): v(pt{a, b}), c(-_c) {
+	Line(ld a, ld b, ld _c): v(pt{a, b}), c(-_c) {
 		ld d = v.abs();
 		v = v * (1. / d);
 		c /= d;
 	}
 
 	//check: v.abs() == 1
-	ld signedDist(pt p) {
+	ld signed_dist(pt p) {
 		return v * p - c;
 	}
 };
@@ -486,3 +483,4 @@ struct Sieve {
 	}
 };
 endsnippet
+
