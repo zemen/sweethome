@@ -74,6 +74,18 @@ using ll = long long;
 using ld = long double;
 
 signed main() {
+#ifdef LOCAL
+	assert(freopen("${1:test}.in", "r", stdin));
+#endif
+	$0
+}
+endsnippet
+
+snippet templ2 "template"
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
 	$0
 }
 endsnippet
@@ -115,7 +127,7 @@ struct BoolArray {
 		return revision[id] == cur_revision;
 	}
 
-	void set_true(int id, bool value = true) {
+	void set(int id, bool value = true) {
 		revision[id] = value ? cur_revision : -1;
 	}
 };
@@ -468,6 +480,7 @@ struct Sieve {
 	vector<char> p;
 
 	void build() {
+		p[0] = p[1] = false;
 		for (int i = 2; i * i < (int) p.size(); ++i) {
 			if (!p[i]) {
 				continue;
@@ -483,4 +496,3 @@ struct Sieve {
 	}
 };
 endsnippet
-
