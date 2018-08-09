@@ -16,6 +16,7 @@ Plugin 'rdnetto/YCM-Generator'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-fugitive'
+Plugin 'xuhdev/vim-latex-live-preview'
 call vundle#end()
 filetype plugin indent on
 
@@ -39,11 +40,13 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Settings "
 syntax on
-set ai si nu sw=2 ts=2 sts=2 et spr
+set ai si nu sw=2 ts=2 sts=2 et spr tm=80
 set enc=utf-8
 set cino=N-s,g0,+2s,l-s,i2s
 set cinw+=forn
 set dir=$HOME/.vim/swapfiles//
+set keymap=russian-jcukenwin
+set iminsert=0
 
 " Mappings "
 imap jk <esc>:w<cr>
@@ -64,7 +67,7 @@ ab pii pair<int, int>
 ab vi vector<int>
 
 " Compile and run "
-let $CXXFLAGS="-O2 -DLOCAL -std=c++11 -Wall -Wextra -Wno-unused-result"
+let $CXXFLAGS="-O2 -DLOCAL -std=c++17 -Wall -Wextra -Wno-unused-result"
 func! Compile()
   write
   if &filetype == "cpp" || &filetype == "c"

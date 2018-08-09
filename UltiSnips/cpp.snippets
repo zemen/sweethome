@@ -137,14 +137,14 @@ snippet dickstra "dickstra" b
 vector<ll> dickstra(int from) {
 	const ll infl = 4e18;
 	vector<ll> dist(n, infl);
-	using Elem = pair<int, ll>;
+	using Elem = pair<ll, int>;
 	priority_queue<Elem, vector<Elem>, greater<Elem>> o;
 	dist[from] = 0;
 	o.emplace(dist[from], from);
 	while (!o.empty()) {
 		int u;
 		ll cdist;
-		tie(u, cdist) = o.top();
+		tie(cdist, u) = o.top();
 		o.pop();
 		if (cdist != dist[u])
 			continue;
@@ -284,9 +284,9 @@ struct pt {
 
 	bool up() const { return ze(y) ? x > 0 : y > 0; }
 
-	pt norm() { return *this * (1. / abs()); }
-	pt rot() { return pt{-y, x}; }
-	pt rot_cw(pt e) { return pt{e * *this, e % *this}; }
+	pt norm() const { return *this * (1. / abs()); }
+	pt rot() const { return pt{-y, x}; }
+	pt rot_cw(pt e) const { return pt{e * *this, e % *this}; }
 	ld abs() const { return hypotl(x, y); }
 	ld abs2() const { return x * x + y * y; }
 };
@@ -314,8 +314,7 @@ struct Line {
 
 	//check: p1 != p2
 	Line(pt p1, pt p2) {
-		v = (p2 - p1).rot();
-		v = v * (1. / v.abs());
+		v = (p2 - p1).rot().norm();
 		c = v * p1;
 	}
 
@@ -324,7 +323,7 @@ struct Line {
 	//check: a^2+b^2 > 0
 	Line(ld a, ld b, ld _c): v(pt{a, b}), c(-_c) {
 		ld d = v.abs();
-		v = v * (1. / d);
+		v = v.norm();
 		c /= d;
 	}
 
@@ -435,8 +434,12 @@ T sub(T x, Ts... y) {
 	return add(x, mod - add(y...));
 }
 template<typename T, typename... Ts>
-void udd(T &x, Ts... y) {
+void udd(T& x, Ts... y) {
 	x = add(x, y...);
+}
+template<typename T, typename... Ts>
+void uub(T& x, Ts... y) {
+	x = sub(x, y...);
 }
 template<typename T>
 T mul(T x) {
@@ -447,7 +450,7 @@ T mul(T x, Ts... y) {
 	return (x * 1ll * mul(y...)) % mod;
 }
 template<typename T, typename... Ts>
-void uul(T &x, Ts... y) {
+void uul(T& x, Ts... y) {
 	x = mul(x, y...);
 }
 int bin(int a, ll deg) {
@@ -496,3 +499,4 @@ struct Sieve {
 	}
 };
 endsnippet
+

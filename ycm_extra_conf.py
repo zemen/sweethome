@@ -36,7 +36,7 @@ import ycm_core
 flags = [
   '-O2',
   '-DLOCAL',
-  '-std=c++11',
+  '-std=c++14',
   '-Wall',
   '-Wextra',
   '-Wno-unused-result'
