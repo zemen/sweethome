@@ -7,6 +7,7 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'SirVer/ultisnips'
 Plugin 'bling/vim-airline'
 Plugin 'ervandew/supertab'
+Plugin 'flazz/vim-colorschemes'
 Plugin 'jeaye/color_coded'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
@@ -46,6 +47,7 @@ set cinw+=forn
 set dir=$HOME/.vim/swapfiles//
 set keymap=russian-jcukenwin
 set iminsert=0
+colorscheme molokai
 
 let $CXXFLAGS="-O2 -DLOCAL -std=c++17 -Wall -Wextra"
 
