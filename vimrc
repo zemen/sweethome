@@ -30,6 +30,7 @@ let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_goto_buffer_command = 'new-tab'
 let g:SuperTabDefaultCompletionType = "<c-n>"
+au FileType python setlocal ts=2 sts=2 sw=2 et
 
 " UltiSnips config "
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -38,9 +39,9 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Settings "
 syntax on
-set ai si nu sw=2 ts=2 sts=2 et spr tm=200 t_Co=256
+set ai si nu sw=2 ts=2 sts=2 et spr tm=200 hls t_Co=256
 set enc=utf-8
-set cino=N-s,g0,+2s,l-s,i2s
+set cino=N-s,g+1,h+1,+2s,l-s,i2s
 set cinw+=forn
 set dir=$HOME/.vim/swapfiles//
 set keymap=russian-jcukenwin
@@ -80,7 +81,4 @@ func! Run()
   else
     !./%<
   endif
-endf
-func! RunWithArgs()
-  !xargs -L 1 ./%<
 endf
