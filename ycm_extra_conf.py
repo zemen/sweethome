@@ -35,8 +35,10 @@ import ycm_core
 
 flags = [
   '-O2',
+  '-x',
+  'c++',
   '-DLOCAL',
-  '-std=c++14',
+  '-std=c++17',
   '-Wall',
   '-Wextra',
   '-Wno-unused-result'
@@ -105,6 +107,7 @@ def GetCompilationInfoForFile( filename ):
   # for header files. So we do our best by asking the db for flags for a
   # corresponding source file, if any. If one exists, the flags for that file
   # should be good enough.
+
   if IsHeaderFile( filename ):
     basename = os.path.splitext( filename )[ 0 ]
     for extension in SOURCE_EXTENSIONS:
@@ -115,6 +118,7 @@ def GetCompilationInfoForFile( filename ):
         if compilation_info.compiler_flags_:
           return compilation_info
     return None
+
   return database.GetCompilationInfoForFile( filename )
 
 

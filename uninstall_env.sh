@@ -10,8 +10,8 @@ rm -rf .oh-my-zsh
 echo ">>> Removing .vimrc"
 rm .vimrc
 
-#echo ">>> Removing vim plugins"
-#rm -rf .vim
+echo ">>> Removing vim plugins"
+rm -rf .vim
 
 echo ">>> Removing .gitconfig"
 rm .gitconfig
@@ -19,11 +19,7 @@ rm .gitconfig
 echo ">>> Removing bin directory"
 rm -rf bin
 
-echo ">>> Removing tmux.conf"
+echo ">>> Uninstalling oh-my-tmux"
+rm -rf .oh-my-tmux
 rm .tmux.conf
-
-if which jupyter > /dev/null; then
-  echo ">>> Removing jupyter config"
-  rm -rf .jupyter
-  rm -rf $(jupyter --data-dir)/nbextensions/vim_binding
-fi
+rm .tmux.conf.local

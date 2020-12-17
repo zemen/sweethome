@@ -47,14 +47,25 @@ vim +PluginInstall +qall
 mkdir .vim/UltiSnips 2> /dev/null
 ln -s $dir/UltiSnips/cpp.snippets .vim/UltiSnips/cpp.snippets
 ln -s $dir/ycm_extra_conf.py .vim/ycm_extra_conf.py
-.vim/bundle/YouCompleteMe/install.py --clang-completer
+
+echo ">>> Installing YouCompleteMe"
+.vim/bundle/YouCompleteMe/install.py --clangd-completer
+
+echo ">>> Installing color_coded"
+cd ~/.vim/bundle/color_coded
+mkdir build && cd build
+cmake ..
+make -j5 && make install
+make clean && make clean_clang
+cd
 
 echo ">>> Installing .gitconfig"
 ln -s $dir/gitconfig .gitconfig
 
-echo ">>> Installing .tmux.conf"
-ln -s $dir/tmux.conf .tmux.conf
-tmux source .tmux.conf
+echo ">>> Installing oh-my-tmux"
+git clone https://github.com/gpakosz/.tmux.git ~/.oh-my-tmux
+ln -s -f ~/.oh-my-tmux/.tmux.conf ~/.tmux.conf
+ln -s $dir/tmux.conf.local ~/.tmux.conf.local
 
 echo ">>> Installing bin directory"
 mkdir bin 2> /dev/null
@@ -63,12 +74,3 @@ ln -s $dir/bin/compile bin/compile
 chmod +x bin/compile
 ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf bin
 ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf-tmux bin
-
-if which jupyter > /dev/null; then
-  echo ">>> Installing jupyter-vim-binding"
-  mkdir -p $(jupyter --data-dir)/nbextensions 2> /dev/null
-  cd $(jupyter --data-dir)/nbextensions
-  git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
-  cd
-  ln -s $dir/jupyter .jupyter
-fi

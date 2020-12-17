@@ -146,15 +146,17 @@ vector<ll> dickstra(int from) {
 		ll cdist;
 		tie(cdist, u) = o.top();
 		o.pop();
-		if (cdist != dist[u])
+		if (cdist != dist[u]) {
 			continue;
+		}
 		for (auto p : g[u]) {
 			int v;
 			ll w;
 			tie(v, w) = p;
 			ll ndist = dist[u] + w;
-			if (ndist >= dist[v])
+			if (ndist >= dist[v]) {
 				continue;
+			}
 			dist[v] = ndist;
 			o.emplace(dist[v], v);
 		}
@@ -281,6 +283,7 @@ struct pt {
 	ld operator%(const pt& p) const { return x * p.y - y * p.x; }
 	pt operator*(const ld& a) const { return pt{x * a, y * a}; }
 	bool operator==(const pt& p) const { return eq(x, p.x) && eq(y, p.y); }
+	bool operator!=(const pt& p) const { return !operator==(p); }
 
 	bool up() const { return ze(y) ? x > 0 : y > 0; }
 
@@ -332,6 +335,64 @@ struct Line {
 		return v * p - c;
 	}
 };
+endsnippet
+
+snippet geometry_int "geometry_int" b
+struct pt {
+	ll x, y;
+
+	pt operator+(const pt& p) const { return pt{x + p.x, y + p.y}; }
+	pt operator-(const pt& p) const { return pt{x - p.x, y - p.y}; }
+	ll operator*(const pt& p) const { return x * p.x + y * p.y; }
+	ll operator%(const pt& p) const { return x * p.y - y * p.x; }
+	pt operator*(const ll& a) const { return pt{x * a, y * a}; }
+	bool operator==(const pt& p) const { return x == p.x && y == p.y; }
+	bool operator!=(const pt& p) const { return !operator==(p); }
+
+	bool up() const { return y == 0 ? x > 0 : y > 0; }
+
+	pt norm() const { return *this * (1. / abs()); }
+	pt rot() const { return pt{-y, x}; }
+	pt rot_cw(pt e) const { return pt{e * *this, e % *this}; }
+	ld abs() const { return hypotl(x, y); }
+	ll abs2() const { return x * x + y * y; }
+};
+
+istream &operator>>(istream &in, pt &p) { return in >> p.x >> p.y; }
+ostream &operator<<(ostream &out, const pt &p) { return out << p.x << ' ' << p.y; }
+
+bool cmp_yx(const pt& a, const pt& b) {
+	if (a.y != b.y) {
+		return a.y < b.y;
+	}
+	return a.x < b.x;
+}
+
+vector<pt> convex_hull(vector<pt> h) {
+	sort(h.begin(), h.end(), cmp_yx);
+	h.erase(unique(h.begin(), h.end()), h.end());
+	vector<pt> L, R;
+	for (auto p: h) {
+		while (R.size() > 1 && (p - R.back()) % (p - *next(R.rbegin())) >= 0) {
+			R.pop_back();
+		}
+		R.push_back(p);
+		while (L.size() > 1 && (p - L.back()) % (p - *next(L.rbegin())) <= 0) {
+			L.pop_back();
+		}
+		L.push_back(p);
+	}
+	if (!L.empty()) {
+		L.pop_back();
+	}
+	reverse(L.begin(), L.end());
+	if (!L.empty()) {
+		L.pop_back();
+	}
+	h = R;
+	h.insert(h.end(), L.begin(), L.end());
+	return h;
+}
 endsnippet
 
 snippet hash "hash" b
@@ -416,6 +477,46 @@ struct Hash {
 using Hashing::Hash;
 endsnippet
 
+snippet hash_table "hash_table" b
+mt19937_64 rnd(random_device{}());
+using ull = unsigned long long;
+template<typename T>
+struct HashMap {
+	static constexpr ull S = 1 << 21;
+	static constexpr ull None = ull(-1);
+	ull h[S + 1000];
+	T val[S + 1000];
+	ull secret;
+
+	HashMap() : secret(rnd()) {
+		memset(h, -1, sizeof(h));
+	}
+
+	int hash(ull key) {
+		key ^= secret;
+		return key ^ (key << 7) ^ (key >> 3);
+	}
+
+	int find_index(ull key) {
+		int i = hash(key) & (S - 1);
+		while (h[i] != None && h[i] != key) {
+			++i;
+		}
+		return i;
+	}
+
+	bool count(ull key) {
+		return h[find_index(key)] == key;
+	}
+
+	T& operator[](ull key) {
+		int i = find_index(key);
+		h[i] = key;
+		return val[i];
+	}
+};
+endsnippet
+
 snippet modular "modular" b
 const int mod = 1e9 + 7;
 template<typename T>
@@ -476,6 +577,61 @@ using oset = __gnu_pbds::tree<int, __gnu_pbds::null_type,
 				std::less<int>,
 				__gnu_pbds::rb_tree_tag,
 				__gnu_pbds::tree_order_statistics_node_update>;
+endsnippet
+
+snippet poly "poly" b
+using Poly = vector<int>;
+
+void reduce(Poly& p) {
+	while (!p.empty() && p.back() == 0) {
+		p.pop_back();
+	}
+}
+
+Poly add(const Poly& a, const Poly& b) {
+	Poly res = a;
+	res.resize(max(a.size(), b.size()));
+	for (size_t i = 0; i < b.size(); ++i) {
+		udd(res[i], b[i]);
+	}
+	reduce(res);
+	return res;
+}
+
+Poly sub(const Poly& a, const Poly& b) {
+	Poly res = a;
+	res.resize(max(a.size(), b.size()));
+	for (size_t i = 0; i < b.size(); ++i) {
+		uub(res[i], b[i]);
+	}
+	reduce(res);
+	return res;
+}
+
+Poly mul(const Poly& a, const Poly& b) {
+	Poly res(a.size() + b.size());
+	for (size_t i = 0; i < a.size(); ++i) {
+		for (size_t j = 0; j < b.size(); ++j) {
+			udd(res[i + j], mul(a[i], b[j]));
+		}
+	}
+	reduce(res);
+	return res;
+}
+
+ostream& operator<<(ostream& out, const Poly& p) {
+	bool f = true;
+	out << "{";
+	for (auto x : p) {
+		if (f) {
+			f = false;
+		} else {
+			out << ", ";
+		}
+		out << x;
+	}
+	return out << "}";
+}
 endsnippet
 
 snippet sieve "sieve" b
