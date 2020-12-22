@@ -51,13 +51,13 @@ ln -s $dir/ycm_extra_conf.py .vim/ycm_extra_conf.py
 echo ">>> Installing YouCompleteMe"
 .vim/bundle/YouCompleteMe/install.py --clangd-completer
 
-echo ">>> Installing color_coded"
-cd ~/.vim/bundle/color_coded
-mkdir build && cd build
-cmake ..
-make -j5 && make install
-make clean && make clean_clang
-cd
+#echo ">>> Installing color_coded"
+#cd ~/.vim/bundle/color_coded
+#mkdir build && cd build
+#cmake ..
+#make -j5 && make install
+#make clean && make clean_clang
+#cd
 
 echo ">>> Installing .gitconfig"
 ln -s $dir/gitconfig .gitconfig
@@ -72,5 +72,7 @@ mkdir bin 2> /dev/null
 ln -s $HOME/.vim/bundle/YCM-Generator/config_gen.py bin/ycm_config_gen
 ln -s $dir/bin/compile bin/compile
 chmod +x bin/compile
+ln -s $dir/bin/commit_submodule bin/commit_submodule
+chmod +x bin/commit_submodule
 ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf bin
 ln -s $HOME/.oh-my-zsh/custom/plugins/fzf/bin/fzf-tmux bin
