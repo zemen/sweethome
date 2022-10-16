@@ -1,8 +1,9 @@
 [user]
-  email = konstantin.semenov@aimtech.team
+  email = konstantin.semenov@pinely.com
   name = Konstantin Semenov
 [push]
   default = simple
+  recurseSubmodules = check
 [pull]
   rebase = true
 [merge]

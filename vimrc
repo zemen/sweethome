@@ -19,6 +19,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-fugitive'
 Plugin 'xuhdev/vim-latex-live-preview'
 Plugin 'ycm-core/YouCompleteMe'
+Plugin 'psf/black'
 call vundle#end()
 filetype plugin indent on
 
@@ -31,7 +32,8 @@ let g:ycm_enable_diagnostic_signs = 0
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
 let g:ycm_goto_buffer_command = 'new-tab'
 let g:SuperTabDefaultCompletionType = "<c-n>"
-au FileType python setlocal ts=2 sts=2 sw=2 et
+let g:ycm_clangd_args = ['--header-insertion=never', '--clang-tidy', '--pch-storage=disk', '--background-index']
+au FileType python setlocal ts=4 sts=4 sw=4 et
 
 " UltiSnips config "
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -40,6 +42,7 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Settings "
 syntax on
+set mouse=a
 set ai si nu sw=2 ts=2 sts=2 et spr tm=200 hls t_Co=256
 set enc=utf-8
 set cino=N-s,g+1,h+1,+2s,l-s,i2s
@@ -59,7 +62,8 @@ map gd :YcmCompleter GoTo<cr>
 map gD :YcmCompleter GetType<cr>
 map gc <plug>NERDCommenterComment
 map gu <plug>NERDCommenterUncomment
-map gf :ClangFormat<cr>
+au FileType c,cpp map gf :ClangFormat<cr>
+au FileType python map gf :Black<cr>
 map <f9> :make! %:r<cr>
 map <f5> :call Run()<cr>
 map <f8> :TagbarToggle<cr>
