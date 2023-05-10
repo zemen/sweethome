@@ -49,12 +49,12 @@ curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --c
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 echo ">>> Installing vim plugins"
-nvim +PlugInstall +qall
+nvim +PlugInstall
 ln -s $dir/coc-settings.json .config/nvim/
 ln -s $dir/UltiSnips .config/nvim/
 
 echo ">>> Installing CoC plugins"
-nvim +CocInstall coc-sh coc-clangd coc-cmake coc-go coc-java coc-json coc-markdownlint coc-pyright coc-solidity coc-snippets +qall
+nvim "+CocInstall coc-sh coc-clangd coc-cmake coc-go coc-java coc-json coc-markdownlint coc-pyright coc-solidity coc-snippets"
 
 echo ">>> Installing .gitconfig"
 ln -s $dir/gitconfig .gitconfig

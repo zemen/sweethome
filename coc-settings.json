@@ -13,7 +13,8 @@
   },
   "clangd.arguments": [
     "--clang-tidy",
-    "--background-index"
+    "--background-index",
+    "--pch-storage=disk"
   ],
   "clangd.disableSnippetCompletion": true,
   "coc.preferences.jumpCommand": "tab drop",
