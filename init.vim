@@ -8,13 +8,17 @@ Plug 'tpope/vim-fugitive'
 Plug 'github/copilot.vim'
 call plug#end()
 
-" CoC config "
+" Tab "
+let g:copilot_no_tab_map = v:true
 inoremap <silent><expr> <TAB>
       \ coc#jumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ coc#pum#visible() ? coc#_select_confirm() :
       \ coc#expandable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand',''])\<CR>" :
+      \ exists('b:_copilot.suggestions') ? copilot#Accept("\<CR>") :
       \ CheckBackSpace() ? "\<TAB>" :
       \ coc#refresh()
+
+" CoC config "
 function! CheckBackSpace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -46,10 +50,14 @@ function! ShowDocumentation()
 endfunction
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
+" Rename
+nmap <leader>rn <Plug>(coc-rename)
+" Quickfix
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Settings "
-set nu sw=2 ts=2 et tm=200 ut=300 scl=yes nobk nowb
-set cino=N-s,g+1,h+1,+2s,l-s,i2s
+set nu sw=2 ts=2 et tm=200 ut=300 scl=yes nobk nowb spr
+set cino=N-s,g0,+2s,l-s,i2s
 
 " vim-commentary settings
 autocmd FileType cpp setlocal commentstring=//\ %s
@@ -60,7 +68,7 @@ ab pii pair<int, int>
 ab vi vector<int>
 
 " Mappings "
-imap jk <esc>:w<cr>
+imap jk <esc>
 map <c-j> 5j
 map <c-k> 5k
 map <c-p> :Files<cr>
@@ -71,13 +79,18 @@ map <f9> :make! %:r<cr>
 map <f5> :call Run()<cr>
 map <f4> :!xclip -selection clipboard %<cr><cr>
 
+" Terminal "
+tnoremap <Esc> <C-\><C-n>
+au TermOpen * setlocal nonumber signcolumn=no | startinsert
+au TermClose * setlocal number signcolumn=yes | call feedkeys("\<C-\>\<C-n>")
+
 func! Run()
   write
   if &filetype == "python"
-    !python3 %
+    terminal python3 %
   elseif &filetype == "sh" || &filetype == "bash"
-    !bash %
+    terminal %
   else
-    !./%<
+    terminal ./%< < %<.in
   endif
 endf

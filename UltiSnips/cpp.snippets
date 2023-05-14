@@ -71,19 +71,6 @@ snippet templ "template"
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using ld = long double;
-
-signed main() {
-#ifdef LOCAL
-	assert(freopen("${1:test}.in", "r", stdin));
-#endif
-	$0
-}
-endsnippet
-
-snippet templ2 "template"
-#include <bits/stdc++.h>
-using namespace std;
 
 int main() {
 	$0
@@ -113,23 +100,12 @@ struct BoolArray {
 	vector<int> revision;
 	int cur_revision;
 
-	BoolArray() : cur_revision(1) {
-	}
+	BoolArray() : cur_revision(1) {}
+	BoolArray(int n) : revision(n), cur_revision(1) {}
 
-	BoolArray(int n) : revision(n), cur_revision(1) {
-	}
-
-	void clear() {
-		++cur_revision;
-	}
-
-	bool operator[](int id) const {
-		return revision[id] == cur_revision;
-	}
-
-	void set(int id, bool value = true) {
-		revision[id] = value ? cur_revision : -1;
-	}
+	void clear() { ++cur_revision; }
+	bool operator[](int id) const { return revision[id] == cur_revision; }
+	void set(int id, bool value) { revision[id] = value ? cur_revision : -1; }
 };
 endsnippet
 
@@ -198,33 +174,34 @@ struct DSU {
 endsnippet
 
 snippet fenwick "fenwick" b
+template<typename T>
 struct Fenwick {
-	vector<ll> t, a;
+	vector<T> t;
 
-	Fenwick(int n) : t(n), a(n) {
+	Fenwick() {
 	}
 
-	void add(int pos, ll delta) {
-		assert(0 <= pos && pos < (int) t.size());
-		a[pos] += delta;
+	Fenwick(int n): t(n) {
+	}
+
+	void add(int pos, T delta) {
+		if (pos < 0 || pos >= (int) t.size()) {
+			throw out_of_range("pos");
+		}
 		for (int i = pos; i < (int) t.size(); i |= i + 1) {
 			t[i] += delta;
 		}
 	}
 
-	void set(int pos, ll val) {
-		add(pos, val - a[pos]);
-	}
-
-	ll get(int r) {
-		ll res = 0;
+	T get(int r) {
+		T res = 0;
 		for (int i = r - 1; i >= 0; i = (i & (i + 1)) - 1) {
 			res += t[i];
 		}
 		return res;
 	}
 
-	ll get(int l, int r) {
+	T get(int l, int r) {
 		return get(r) - get(l);
 	}
 };
@@ -488,7 +465,7 @@ struct HashMap {
 	T val[S + 1000];
 	ull secret;
 
-	HashMap() : secret(rnd()) {
+	HashMap(): secret(rnd()) {
 		memset(h, -1, sizeof(h));
 	}
 
@@ -518,56 +495,264 @@ struct HashMap {
 endsnippet
 
 snippet modular "modular" b
-const int mod = 1e9 + 7;
-template<typename T>
-T add(T x) {
-	return x;
-}
-template<typename T, typename... Ts>
-T add(T x, Ts... y) {
-	T res = x + add(y...);
-	if (res >= mod)
-		res -= mod;
-	return res;
-}
-template<typename T, typename... Ts>
-T sub(T x, Ts... y) {
-	return add(x, mod - add(y...));
-}
-template<typename T, typename... Ts>
-void udd(T& x, Ts... y) {
-	x = add(x, y...);
-}
-template<typename T, typename... Ts>
-void uub(T& x, Ts... y) {
-	x = sub(x, y...);
-}
-template<typename T>
-T mul(T x) {
-	return x;
-}
-template<typename T, typename... Ts>
-T mul(T x, Ts... y) {
-	return (x * 1ll * mul(y...)) % mod;
-}
-template<typename T, typename... Ts>
-void uul(T& x, Ts... y) {
-	x = mul(x, y...);
-}
-int bin(int a, ll deg) {
-	int r = 1;
-	while (deg) {
-		if (deg & 1)
-			uul(r, a);
-		deg >>= 1;
-		uul(a, a);
+template<
+		typename Mod,
+		bool IsPrime = true,
+		typename = enable_if_t<is_integral_v<typename Mod::value_type> && is_signed_v<typename Mod::value_type>>>
+class Zn {
+	using T = typename Mod::value_type;
+	static constexpr auto mod_ = Mod::value;
+	using ProductType = conditional_t<sizeof(T) <= 4, int64_t, __int128>;
+	struct NormalizedTag {};
+
+public:
+	constexpr Zn(): value_(T()) {
 	}
-	return r;
-}
-int inv(int x) {
-	assert(x);
-	return bin(x, mod - 2);
-}
+
+	template<typename U>
+	explicit constexpr Zn(U value): value_(value % mod_) {
+		if (value_ < 0) {
+			value_ += mod_;
+		}
+	}
+
+	template<typename U>
+	constexpr Zn power(U deg) const noexcept {
+		if (deg < 0) {
+			return power(-deg).inverse();
+		}
+		Zn x = *this;
+		Zn result(1);
+		for (; deg > 0; deg >>= 1, x *= x) {
+			if (deg & 1) {
+				result *= x;
+			}
+		}
+		return result;
+	}
+
+	constexpr Zn operator+(const Zn& other) const noexcept {
+		auto result = value_ + other.value_;
+		if (result >= mod_) {
+			result -= mod_;
+		}
+		return Zn(result, NormalizedTag());
+	}
+
+	constexpr Zn operator-(const Zn& other) const noexcept {
+		auto result = value_ - other.value_;
+		if (result < 0) {
+			result += mod_;
+		}
+		return Zn(result, NormalizedTag());
+	}
+
+	constexpr Zn operator-() const noexcept {
+		return Zn(value_ ? mod_ - value_ : 0, NormalizedTag());
+	}
+
+	constexpr Zn operator*(const Zn& other) const noexcept {
+		return Zn((ProductType(value_) * other.value_) % mod_, NormalizedTag());
+	}
+
+	constexpr Zn operator/(const Zn& other) const noexcept {
+		return *this * other.inverse();
+	}
+
+	constexpr Zn operator+=(const Zn& other) noexcept {
+		return *this = (*this + other);
+	}
+
+	constexpr Zn operator-=(const Zn& other) noexcept {
+		return *this = (*this - other);
+	}
+
+	constexpr Zn operator*=(const Zn& other) noexcept {
+		return *this = (*this * other);
+	}
+
+	constexpr Zn operator/=(const Zn& other) noexcept {
+		return *this = (*this / other);
+	}
+
+	constexpr bool operator==(const Zn& other) const noexcept {
+		return value_ == other.value_;
+	}
+
+	constexpr bool operator!=(const Zn& other) const noexcept {
+		return !(*this == other);
+	}
+
+	constexpr T value() const noexcept {
+		return value_;
+	}
+
+	friend istream& operator>>(istream& is, Zn& z) {
+		is >> z.value_;
+		z = Zn(z.value_);
+		return is;
+	}
+
+	friend ostream& operator<<(ostream& os, const Zn& z) {
+		return os << z.value_;
+	}
+
+	/* @return The modular inverse of this value or 0 if it does not exist. */
+	constexpr Zn inverse() const noexcept {
+		if (value_ == 0) {
+			return Zn();
+		}
+		if constexpr (IsPrime) {
+			return power(mod_ - 2);
+		} else {
+			auto [g, x, y] = extended_gcd(value_, mod_);
+			if (g != 1) {
+				return Zn();
+			} else {
+				T res = (x % mod_ + mod_) % mod_;
+				return res;
+			}
+		}
+	}
+
+private:
+	T value_;
+
+	constexpr Zn(T value, NormalizedTag): value_(value) {
+	}
+
+	static constexpr tuple<T, T, T> extended_gcd(T a, T b) noexcept {
+		if (a == 0) {
+			return {b, 0, 1};
+		}
+		auto [gcd, x1, y1] = extended_gcd(b % a, a);
+		return {gcd, y1 - (b / a) * x1, x1};
+	}
+};
+using Modular = Zn<integral_constant<int, int(1e9) + 7>>;
+endsnippet
+
+snippet ndarray "ndarray" b
+template<typename T, int Dimensions>
+struct SubviewType;
+
+template<typename T, int Dimensions>
+class NDArray {
+public:
+	template<bool IsConst = false>
+	class GenericView {
+		using Pointer = std::conditional_t<IsConst, const T*, T*>;
+
+	public:
+		static_assert(Dimensions > 0);
+		using Subview = std::conditional_t<
+				IsConst,
+				typename SubviewType<T, Dimensions>::const_type,
+				typename SubviewType<T, Dimensions>::type>;
+
+		GenericView(Pointer data, const size_t* shape): data_(data), shape_(shape) {
+		}
+
+		int size() const {
+			if constexpr (Dimensions == 1) {
+				return *shape_;
+			} else {
+				return *shape_ / *(shape_ + 1);
+			}
+		}
+
+		Subview operator[](int index) const {
+			if (index < 0 || index >= size()) {
+				throw out_of_range("Index out of range");
+			}
+			if constexpr (Dimensions == 1) {
+				return data_[index];
+			} else {
+				return {data_ + index * *(shape_ + 1), shape_ + 1};
+			}
+		}
+
+		friend ostream& operator<<(ostream& out, const GenericView& array) {
+			out << '[';
+			for (int i = 0; i < array.size(); ++i) {
+				if (i > 0) {
+					out << ", ";
+				}
+				out << array[i];
+			}
+			out << ']';
+			return out;
+		}
+
+	private:
+		Pointer data_;
+		const size_t* shape_;
+	};
+
+	using View = GenericView<false>;
+	using ConstView = GenericView<true>;
+
+	NDArray(const std::array<size_t, Dimensions>& shape, T value = T()):
+			sizes_([&shape] {
+				std::vector<size_t> sizes(shape.begin(), shape.end());
+				for (auto dim : shape) {
+					if (dim == 0) {
+						throw std::invalid_argument("Invalid shape");
+					}
+				}
+				for (int i = (int) shape.size() - 2; i >= 0; --i) {
+					sizes[i] *= sizes[i + 1];
+				}
+				return sizes;
+			}()),
+			data_(sizes_.front(), value) {
+	}
+
+	operator View() {
+		return View(data_.data(), sizes_.data());
+	}
+
+	operator ConstView() const {
+		return ConstView(data_.data(), sizes_.data());
+	}
+
+	typename View::Subview operator[](int index) {
+		return View(*this)[index];
+	}
+
+	const typename ConstView::Subview operator[](int index) const {
+		return ConstView(this)[index];
+	}
+
+	int size() const {
+		return ConstView(*this).size();
+	}
+
+	friend ostream& operator<<(ostream& out, const NDArray& array) {
+		return out << ConstView(array);
+	}
+
+	void fill(const T& value) {
+		std::fill(data_.begin(), data_.end(), value);
+	}
+
+private:
+	std::vector<size_t> sizes_;
+	std::vector<T> data_;
+};
+
+
+template<typename T, int Dimensions>
+struct SubviewType {
+	using type = typename NDArray<T, Dimensions - 1>::View;
+	using const_type = typename NDArray<T, Dimensions - 1>::ConstView;
+};
+
+template<typename T>
+struct SubviewType<T, 1> {
+	using type = T&;
+	using const_type = const T&;
+};
 endsnippet
 
 snippet ordered_set "ordered_set" b
