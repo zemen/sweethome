@@ -8,15 +8,17 @@ Plug 'tpope/vim-fugitive'
 Plug 'github/copilot.vim'
 call plug#end()
 
-" Tab "
+" Completion "
 let g:copilot_no_tab_map = v:true
 inoremap <silent><expr> <TAB>
       \ coc#jumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ coc#pum#visible() ? coc#_select_confirm() :
       \ coc#expandable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand',''])\<CR>" :
-      \ exists('b:_copilot.suggestions') ? copilot#Accept("\<CR>") :
       \ CheckBackSpace() ? "\<TAB>" :
       \ coc#refresh()
+" Use <c-space> to trigger completion
+inoremap <silent><expr> <c-space>
+      \ exists('b:_copilot.suggestions') ? copilot#Accept("\<CR>") : coc#refresh()
 
 " CoC config "
 function! CheckBackSpace() abort
@@ -24,12 +26,6 @@ function! CheckBackSpace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 let g:coc_snippet_next = '<tab>'
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-" Use <c-space> to trigger completion
-inoremap <silent><expr> <c-space> coc#refresh()
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
