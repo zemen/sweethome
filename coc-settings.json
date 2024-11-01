@@ -16,8 +16,10 @@
     "--background-index",
     "--header-insertion=never"
   ],
+  "inlayHint.enable": false,
   "clangd.disableSnippetCompletion": true,
   "coc.preferences.jumpCommand": "tab drop",
   "coc.preferences.formatOnSave": true,
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "snippets.ultisnips.pythonPrompt": false
 }

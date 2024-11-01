@@ -6,7 +6,10 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'github/copilot.vim'
+Plug 'folke/tokyonight.nvim'
 call plug#end()
+
+colorscheme tokyonight
 
 " Completion "
 let g:copilot_no_tab_map = v:true
